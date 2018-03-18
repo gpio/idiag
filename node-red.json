@@ -1,0 +1,102 @@
+[
+    {
+        "id": "31528568.95c4ba",
+        "type": "serial in",
+        "z": "52d9491a.2d0d68",
+        "name": "",
+        "serial": "f78b6e09.9674d",
+        "x": 226.6333465576172,
+        "y": 196.0666732788086,
+        "wires": [
+            [
+                "24f556ee.83ee6a"
+            ]
+        ]
+    },
+    {
+        "id": "9c925b95.cd9b58",
+        "type": "debug",
+        "z": "52d9491a.2d0d68",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 1138.6335105895996,
+        "y": 192.13338565826416,
+        "wires": []
+    },
+    {
+        "id": "4abb71ab.33f1c",
+        "type": "mongodb3 in",
+        "z": "52d9491a.2d0d68",
+        "service": "_ext_",
+        "configNode": "246b6f5c.4323",
+        "name": "",
+        "collection": "injections",
+        "operation": "insert",
+        "x": 847.633430480957,
+        "y": 190.06668949127197,
+        "wires": [
+            [
+                "9c925b95.cd9b58"
+            ]
+        ]
+    },
+    {
+        "id": "24f556ee.83ee6a",
+        "type": "json",
+        "z": "52d9491a.2d0d68",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 408.6333770751953,
+        "y": 192.46667098999023,
+        "wires": [
+            [
+                "59669108.349b3"
+            ]
+        ]
+    },
+    {
+        "id": "59669108.349b3",
+        "type": "function",
+        "z": "52d9491a.2d0d68",
+        "name": "Calcul",
+        "func": "S = msg.payload.S;\nV = [];\ndeltaS=0.0\nvit=0.0\nS.forEach(function(s, i){\n    if (i<5){\n        V.push((S[i+5]-S[0])/20.0);\n    }else if(i>1493){\n        V.push((S[1499]-S[i-5])/20.0);\n    }else{\n        V.push((S[i+5]-S[i-5])/20.0);\n    }\n    \n});\n\n\nmsg.payload = {\n    'Mac' :'B630T1',\n    'Date' : new Date().toString(),\n    'S' : msg.payload.S,\n    'V' : V,\n    'P' : msg.payload.P\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 556.6333694458008,
+        "y": 196.66667079925537,
+        "wires": [
+            [
+                "4abb71ab.33f1c"
+            ]
+        ]
+    },
+    {
+        "id": "f78b6e09.9674d",
+        "type": "serial-port",
+        "z": "",
+        "serialport": "/dev/ttyACM1",
+        "serialbaud": "57600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": false
+    },
+    {
+        "id": "246b6f5c.4323",
+        "type": "mongodb3",
+        "z": "",
+        "uri": "mongodb://localhost:27017",
+        "name": "",
+        "options": "",
+        "parallelism": "-1"
+    }
+]
